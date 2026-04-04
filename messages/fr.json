@@ -1,0 +1,31 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "products": "Produits",
+    "cart": "Panier",
+    "account": "Compte",
+    "orders": "Commandes",
+    "wishlist": "Liste de souhaits",
+    "subscriptions": "Abonnements",
+    "admin": "Admin",
+    "seller": "Vendeur",
+    "login": "Connexion",
+    "register": "Inscription",
+    "logout": "Déconnexion",
+    "search": "Rechercher"
+  },
+  "home": {
+    "hero": "Tout ce dont vous avez besoin, livré.",
+    "subtitle": "Parcourez les catégories, les vendeurs de confiance et abonnez-vous si vous le souhaitez.",
+    "ctaShop": "Acheter"
+  },
+  "footer": {
+    "rights": "Tous droits réservés.",
+    "privacy": "Confidentialité",
+    "sellerTerms": "Conditions vendeurs"
+  },
+  "cookie": {
+    "banner": "Nous utilisons des cookies pour les fonctions essentielles et les statistiques. En continuant, vous acceptez.",
+    "accept": "Accepter"
+  }
+}
