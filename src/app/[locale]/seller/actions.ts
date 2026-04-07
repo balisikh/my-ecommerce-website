@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
 import type { MutationResult } from "@/lib/action-result";
+import { collectImageUrlsFromForm } from "@/lib/product-image-upload";
 import { Prisma } from "@prisma/client";
 
 function slugify(input: string) {
@@ -34,7 +35,7 @@ export async function sellerCreateProduct(formData: FormData): Promise<MutationR
   const price = Math.round(Number(formData.get("price") ?? 0) * 100);
   const stock = parseInt(String(formData.get("stock") ?? "0"), 10);
   const categoryId = String(formData.get("categoryId") ?? "");
-  const imageUrl = String(formData.get("imageUrl") ?? "").trim();
+  const imageUrls = collectImageUrlsFromForm(formData);
 
   if (!title || !description || !categoryId || price <= 0) {
     return { ok: false, error: "Missing required fields", code: "validation" };
@@ -53,9 +54,10 @@ export async function sellerCreateProduct(formData: FormData): Promise<MutationR
       },
     });
 
-    if (imageUrl) {
+    let position = 0;
+    for (const url of imageUrls) {
       await prisma.productImage.create({
-        data: { productId: product.id, url: imageUrl, alt: title, position: 0 },
+        data: { productId: product.id, url, alt: title, position: position++ },
       });
     }
 

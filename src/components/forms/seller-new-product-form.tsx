@@ -4,12 +4,14 @@ import { useState } from "react";
 import { useRouter } from "@/i18n/routing";
 import { toast } from "sonner";
 import { sellerCreateProduct } from "@/app/[locale]/seller/actions";
+import ProductImageUploadField from "@/components/product-image-upload-field";
 
 type Category = { id: string; name: string };
 
 export default function SellerNewProductForm({ categories }: { categories: Category[] }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
+  const [uploadKey, setUploadKey] = useState(0);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -23,6 +25,7 @@ export default function SellerNewProductForm({ categories }: { categories: Categ
     }
     toast.success("Product created");
     e.currentTarget.reset();
+    setUploadKey((k) => k + 1);
     router.refresh();
   }
 
@@ -76,10 +79,11 @@ export default function SellerNewProductForm({ categories }: { categories: Categ
           </option>
         ))}
       </select>
+      <ProductImageUploadField key={uploadKey} />
       <input
         name="imageUrl"
         type="url"
-        placeholder="Image URL"
+        placeholder="Or image URL (optional)"
         className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
       />
       <button

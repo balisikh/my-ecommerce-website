@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "@/i18n/routing";
 import { toast } from "sonner";
 import { adminCreateProduct } from "@/app/[locale]/admin/actions";
+import ProductImageUploadField from "@/components/product-image-upload-field";
 
 type Category = { id: string; name: string };
 type Seller = { id: string; shopName: string };
@@ -17,6 +18,7 @@ export default function AdminNewProductForm({
 }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
+  const [uploadKey, setUploadKey] = useState(0);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -29,6 +31,7 @@ export default function AdminNewProductForm({
       return;
     }
     toast.success("Product created");
+    setUploadKey((k) => k + 1);
     router.push("/admin/products");
     router.refresh();
   }
@@ -117,12 +120,13 @@ export default function AdminNewProductForm({
           ))}
         </select>
       </div>
+      <ProductImageUploadField key={uploadKey} />
       <div>
-        <label className="text-sm font-medium">Image URL</label>
+        <label className="text-sm font-medium">Image URL (optional)</label>
         <input
           name="imageUrl"
           type="url"
-          placeholder="https://…"
+          placeholder="Or paste an external image URL…"
           className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
         />
       </div>

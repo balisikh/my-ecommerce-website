@@ -5,6 +5,7 @@ import { useRouter } from "@/i18n/routing";
 import { toast } from "sonner";
 import { adminUpdateProduct, adminDeleteProduct } from "@/app/[locale]/admin/actions";
 import DeleteProductForm from "@/components/delete-product-form";
+import ProductImageUploadField from "@/components/product-image-upload-field";
 type Category = { id: string; name: string };
 type Seller = { id: string; shopName: string };
 
@@ -33,6 +34,7 @@ export default function AdminEditProductForm({
 }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
+  const [uploadKey, setUploadKey] = useState(0);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -45,6 +47,7 @@ export default function AdminEditProductForm({
       return;
     }
     toast.success("Product updated");
+    setUploadKey((k) => k + 1);
     router.refresh();
   }
 
@@ -149,9 +152,19 @@ export default function AdminEditProductForm({
             className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
           />
         </div>
-        <p className="text-xs text-zinc-500">
-          First image: {product.images[0]?.url ?? "none"} (edit via DB or extend form later)
-        </p>
+        <ProductImageUploadField
+          key={uploadKey}
+          existingUrls={product.images.map((i) => i.url)}
+        />
+        <div>
+          <label className="text-sm font-medium">Add image from URL (optional)</label>
+          <input
+            name="imageUrl"
+            type="url"
+            placeholder="https://…"
+            className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+          />
+        </div>
         <button
           type="submit"
           disabled={pending}

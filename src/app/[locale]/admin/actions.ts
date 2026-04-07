@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
 import type { MutationResult } from "@/lib/action-result";
+import { collectImageUrlsFromForm } from "@/lib/product-image-upload";
 import { OrderStatus } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 
@@ -30,7 +31,7 @@ export async function adminCreateProduct(formData: FormData): Promise<MutationRe
   const sku = String(formData.get("sku") ?? "").trim() || null;
   const categoryId = String(formData.get("categoryId") ?? "");
   const sellerId = String(formData.get("sellerId") ?? "");
-  const imageUrl = String(formData.get("imageUrl") ?? "").trim();
+  const imageUrls = collectImageUrlsFromForm(formData);
   const isSubscriptionEligible = formData.get("isSubscriptionEligible") === "on";
   const stripePriceId = String(formData.get("stripePriceId") ?? "").trim() || null;
 
@@ -54,9 +55,10 @@ export async function adminCreateProduct(formData: FormData): Promise<MutationRe
       },
     });
 
-    if (imageUrl) {
+    let position = 0;
+    for (const url of imageUrls) {
       await prisma.productImage.create({
-        data: { productId: product.id, url: imageUrl, alt: title, position: 0 },
+        data: { productId: product.id, url, alt: title, position: position++ },
       });
     }
 
@@ -119,6 +121,20 @@ export async function adminUpdateProduct(
       };
     }
     return { ok: false, error: "Could not update product.", code: "validation" };
+  }
+
+  const newImageUrls = collectImageUrlsFromForm(formData);
+  if (newImageUrls.length) {
+    const maxPos = await prisma.productImage.aggregate({
+      where: { productId },
+      _max: { position: true },
+    });
+    let position = (maxPos._max.position ?? -1) + 1;
+    for (const url of newImageUrls) {
+      await prisma.productImage.create({
+        data: { productId, url, alt: title, position: position++ },
+      });
+    }
   }
 
   revalidatePath("/en/products");
