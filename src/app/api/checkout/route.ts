@@ -43,11 +43,8 @@ export async function POST(req: Request) {
   }
 
   const sellerIds = [...new Set(cart.items.map((i) => i.product.sellerId))];
-  if (sellerIds.length !== 1) {
-    return NextResponse.json({ error: "Cart must be from a single seller" }, { status: 400 });
-  }
-  const sellerId = sellerIds[0];
-  const seller = cart.items[0].product.seller;
+  const singleSeller = sellerIds.length === 1;
+  const seller = singleSeller ? cart.items[0].product.seller : null;
 
   for (const item of cart.items) {
     if (item.product.stock < item.quantity) {
@@ -141,7 +138,7 @@ export async function POST(req: Request) {
       : 0;
 
   const connectFee =
-    seller.stripeConnectAccountId && seller.commissionBps > 0
+    seller?.stripeConnectAccountId && seller.commissionBps > 0
       ? Math.max(Math.round(afterDisc * (seller.commissionBps / 10000)), 1)
       : 0;
 
@@ -170,7 +167,6 @@ export async function POST(req: Request) {
       cartId: cart.id,
       userId: session.user.id,
       addressId: address.id,
-      sellerId,
       couponCode: couponCode ?? "",
       couponId: couponId ?? "",
       discount: String(discount),
@@ -194,7 +190,7 @@ export async function POST(req: Request) {
           billing_address_collection: "required" as const,
         }
       : {}),
-    ...(seller.stripeConnectAccountId && connectFee > 0
+    ...(singleSeller && seller?.stripeConnectAccountId && connectFee > 0
       ? {
           payment_intent_data: {
             application_fee_amount: connectFee,

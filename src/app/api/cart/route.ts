@@ -57,13 +57,6 @@ export async function POST(req: Request) {
   if (!cart) {
     return NextResponse.json({ error: "Cart error" }, { status: 500 });
   }
-  const sellers = new Set(cart.items.map((i) => i.product.sellerId));
-  if (sellers.size > 0 && !sellers.has(product.sellerId)) {
-    return NextResponse.json(
-      { error: "Cart can only contain items from one seller. Clear cart first." },
-      { status: 400 },
-    );
-  }
 
   await prisma.cartItem.upsert({
     where: {

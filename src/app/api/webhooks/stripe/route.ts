@@ -135,7 +135,6 @@ async function fulfillCheckoutSession(
   const shipping = parseInt(meta.shipping ?? "0", 10);
   const tax = parseInt(meta.tax ?? "0", 10);
   const total = session.amount_total ?? subtotal - discount + shipping + tax;
-  const sellerId = meta.sellerId || cart.items[0].product.sellerId;
   const couponId = meta.couponId || "";
   const couponCode = meta.couponCode || null;
 
@@ -152,38 +151,86 @@ async function fulfillCheckoutSession(
       });
     }
 
-    const order = await tx.order.create({
-      data: {
-        userId,
-        status: OrderStatus.PAID,
-        stripeSessionId: session.id,
-        stripePaymentIntentId: pi ?? null,
-        subtotal,
-        discount,
-        shipping,
-        tax,
-        total,
-        addressId,
-        sellerId,
-        couponCode,
-        lines: {
-          create: cart.items.map((i) => ({
-            productId: i.productId,
-            sellerId: i.product.sellerId,
-            title: i.product.title,
-            unitPrice: i.product.price,
-            quantity: i.quantity,
-          })),
+    // Split a single paid Stripe checkout into one order per seller.
+    const bySeller = new Map<
+      string,
+      { items: typeof cart.items; subtotal: number }
+    >();
+    for (const i of cart.items) {
+      const key = i.product.sellerId;
+      const existing = bySeller.get(key);
+      if (existing) {
+        existing.items.push(i);
+        existing.subtotal += i.product.price * i.quantity;
+      } else {
+        bySeller.set(key, { items: [i], subtotal: i.product.price * i.quantity });
+      }
+    }
+
+    const sellers = [...bySeller.entries()];
+    const denom = Math.max(
+      1,
+      sellers.reduce((s, [, v]) => s + v.subtotal, 0),
+    );
+
+    let allocatedDiscount = 0;
+    let allocatedShipping = 0;
+    let allocatedTax = 0;
+
+    const orders: { id: string; sellerId: string }[] = [];
+    for (let idx = 0; idx < sellers.length; idx++) {
+      const [sellerId, bucket] = sellers[idx];
+      const isLast = idx === sellers.length - 1;
+      const ratio = bucket.subtotal / denom;
+
+      const d = isLast ? discount - allocatedDiscount : Math.round(discount * ratio);
+      const sh = isLast ? shipping - allocatedShipping : Math.round(shipping * ratio);
+      const txAmt = isLast ? tax - allocatedTax : Math.round(tax * ratio);
+
+      allocatedDiscount += d;
+      allocatedShipping += sh;
+      allocatedTax += txAmt;
+
+      const orderSubtotal = bucket.subtotal;
+      const orderTotal = orderSubtotal - d + sh + txAmt;
+
+      const order = await tx.order.create({
+        data: {
+          userId,
+          status: OrderStatus.PAID,
+          stripeSessionId: session.id,
+          stripePaymentIntentId: pi ?? null,
+          subtotal: orderSubtotal,
+          discount: d,
+          shipping: sh,
+          tax: txAmt,
+          total: orderTotal,
+          addressId,
+          sellerId,
+          couponCode,
+          lines: {
+            create: bucket.items.map((i) => ({
+              productId: i.productId,
+              sellerId: i.product.sellerId,
+              title: i.product.title,
+              unitPrice: i.product.price,
+              quantity: i.quantity,
+            })),
+          },
         },
-      },
-    });
+      });
+
+      orders.push({ id: order.id, sellerId });
+    }
 
     if (couponId) {
+      // Record redemption once for the overall checkout. Attach to the first created order.
+      // (If you prefer, we can instead create one redemption per seller order.)
       await tx.couponRedemption.create({
         data: {
           couponId,
           userId,
-          orderId: order.id,
+          orderId: orders[0]?.id,
         },
       });
     }
