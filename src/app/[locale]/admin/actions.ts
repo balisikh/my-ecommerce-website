@@ -200,3 +200,74 @@ export async function adminUpdateOrderStatus(
   revalidatePath("/fr/admin/orders");
   return { ok: true };
 }
+
+export async function adminCreateCoupon(formData: FormData): Promise<MutationResult> {
+  const session = await auth();
+  if (session?.user?.role !== "ADMIN") {
+    return { ok: false, error: "Unauthorized", code: "unauthorized" };
+  }
+
+  const code = String(formData.get("code") ?? "")
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, "");
+  const type = String(formData.get("type") ?? "PERCENT");
+  const value = parseInt(String(formData.get("value") ?? "0"), 10);
+  const minSubtotalDollars = String(formData.get("minSubtotal") ?? "").trim();
+  const maxRedemptionsStr = String(formData.get("maxRedemptions") ?? "").trim();
+  const expiresAtStr = String(formData.get("expiresAt") ?? "").trim();
+
+  if (!code || !/^[A-Z0-9_-]{3,32}$/.test(code)) {
+    return { ok: false, error: "Invalid code (use 3-32 chars: A-Z, 0-9, _ or -)", code: "validation" };
+  }
+  if (type !== "PERCENT" && type !== "FIXED") {
+    return { ok: false, error: "Invalid coupon type", code: "validation" };
+  }
+  if (!Number.isFinite(value) || value <= 0) {
+    return { ok: false, error: "Value must be greater than 0", code: "validation" };
+  }
+  if (type === "PERCENT" && value > 100) {
+    return { ok: false, error: "Percent value cannot exceed 100", code: "validation" };
+  }
+
+  const minSubtotal =
+    minSubtotalDollars !== ""
+      ? Math.round(Number(minSubtotalDollars) * 100)
+      : null;
+  if (minSubtotal != null && (!Number.isFinite(minSubtotal) || minSubtotal < 0)) {
+    return { ok: false, error: "Invalid min subtotal", code: "validation" };
+  }
+
+  const maxRedemptions =
+    maxRedemptionsStr !== "" ? parseInt(maxRedemptionsStr, 10) : null;
+  if (maxRedemptions != null && (!Number.isFinite(maxRedemptions) || maxRedemptions <= 0)) {
+    return { ok: false, error: "Invalid max redemptions", code: "validation" };
+  }
+
+  const expiresAt = expiresAtStr ? new Date(expiresAtStr) : null;
+  if (expiresAtStr && Number.isNaN(expiresAt?.getTime())) {
+    return { ok: false, error: "Invalid expiry date", code: "validation" };
+  }
+
+  try {
+    await prisma.coupon.create({
+      data: {
+        code,
+        type: type as "PERCENT" | "FIXED",
+        value,
+        minSubtotal,
+        maxRedemptions,
+        expiresAt,
+      },
+    });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+      return { ok: false, error: "Coupon code already exists.", code: "validation" };
+    }
+    return { ok: false, error: "Could not create coupon.", code: "validation" };
+  }
+
+  revalidatePath("/en/admin/coupons");
+  revalidatePath("/fr/admin/coupons");
+  return { ok: true };
+}

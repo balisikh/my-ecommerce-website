@@ -29,6 +29,13 @@ export default function AdminDashboardPage() {
           <h2 className="font-semibold">Analytics</h2>
           <p className="mt-1 text-sm text-zinc-500">Revenue by day</p>
         </Link>
+        <Link
+          href="/admin/coupons"
+          className="rounded-xl border border-zinc-200 p-6 hover:border-orange-500 dark:border-zinc-800"
+        >
+          <h2 className="font-semibold">Coupons</h2>
+          <p className="mt-1 text-sm text-zinc-500">Create and manage promo codes</p>
+        </Link>
       </ul>
     </div>
   );

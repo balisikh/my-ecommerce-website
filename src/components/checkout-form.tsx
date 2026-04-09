@@ -5,11 +5,19 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { formatMoney } from "@/lib/utils";
 
 export default function CheckoutForm() {
   const params = useParams();
   const locale = (params.locale as string) ?? "en";
   const [couponCode, setCouponCode] = useState("");
+  const [applied, setApplied] = useState<null | {
+    code: string;
+    discount: number;
+    subtotal: number;
+    totalAfterDiscount: number;
+  }>(null);
+  const [applying, setApplying] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     line1: "",
@@ -21,6 +29,40 @@ export default function CheckoutForm() {
     label: "",
   });
 
+  async function applyCoupon() {
+    const code = couponCode.trim();
+    if (!code) {
+      toast.error("Enter a coupon code first");
+      return;
+    }
+    setApplying(true);
+    try {
+      const res = await fetch(`/api/coupon?code=${encodeURIComponent(code)}`);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) {
+        setApplied(null);
+        toast.error(data.error ?? "Coupon not valid");
+        return;
+      }
+      setApplied({
+        code: data.couponCode,
+        discount: data.discount,
+        subtotal: data.subtotal,
+        totalAfterDiscount: data.totalAfterDiscount,
+      });
+      setCouponCode(data.couponCode);
+      toast.success(`Coupon applied: -${formatMoney(data.discount)}`);
+    } finally {
+      setApplying(false);
+    }
+  }
+
+  function clearCoupon() {
+    setApplied(null);
+    setCouponCode("");
+    toast.message("Coupon cleared");
+  }
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -30,7 +72,7 @@ export default function CheckoutForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           locale,
-          couponCode: couponCode || undefined,
+          couponCode: applied?.code || couponCode || undefined,
           address: {
             line1: form.line1,
             line2: form.line2 || undefined,
@@ -104,11 +146,39 @@ export default function CheckoutForm() {
         onChange={(e) => setForm((f) => ({ ...f, label: e.target.value }))}
       />
       <h2 className="pt-4 text-lg font-semibold">Coupon</h2>
-      <Input
-        placeholder="Code (e.g. SAVE10)"
-        value={couponCode}
-        onChange={(e) => setCouponCode(e.target.value)}
-      />
+      <div className="flex gap-2">
+        <Input
+          placeholder="Code (e.g. SAVE10)"
+          value={couponCode}
+          onChange={(e) => {
+            setCouponCode(e.target.value);
+            setApplied(null);
+          }}
+        />
+        <Button type="button" variant="secondary" disabled={applying} onClick={applyCoupon}>
+          {applying ? "Applying…" : "Apply"}
+        </Button>
+      </div>
+      {applied ? (
+        <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900 dark:border-emerald-900/40 dark:bg-emerald-950/30 dark:text-emerald-100">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span>
+              Applied <strong className="font-mono">{applied.code}</strong> — save{" "}
+              <strong>{formatMoney(applied.discount)}</strong>
+            </span>
+            <button
+              type="button"
+              onClick={clearCoupon}
+              className="text-xs font-medium underline underline-offset-2 hover:opacity-80"
+            >
+              Remove
+            </button>
+          </div>
+          <p className="mt-1 text-xs opacity-80">
+            New subtotal after discount: {formatMoney(applied.totalAfterDiscount)}
+          </p>
+        </div>
+      ) : null}
       <Button type="submit" className="w-full" disabled={loading}>
         {loading ? "Redirecting to Stripe…" : "Pay with Stripe"}
       </Button>
