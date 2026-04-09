@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
+import { publicImageUrl } from "@/lib/public-image-url";
 
 type Props = {
   /** Existing image URLs (edit screen) — shown as read-only previews, not re-submitted */
@@ -56,7 +57,14 @@ export default function ProductImageUploadField({ existingUrls = [] }: Props) {
                 key={url}
                 className="relative h-20 w-20 overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700"
               >
-                <Image src={url} alt="" fill className="object-cover" unoptimized sizes="80px" />
+                <Image
+                  src={publicImageUrl(url)}
+                  alt=""
+                  fill
+                  className="object-cover"
+                  unoptimized
+                  sizes="80px"
+                />
               </li>
             ))}
           </ul>
@@ -88,7 +96,14 @@ export default function ProductImageUploadField({ existingUrls = [] }: Props) {
         <div key={url} className="flex items-center gap-3">
           <input type="hidden" name="imageUrls" value={url} />
           <div className="relative h-16 w-16 overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700">
-            <Image src={url} alt="" fill className="object-cover" unoptimized sizes="64px" />
+            <Image
+              src={publicImageUrl(url)}
+              alt=""
+              fill
+              className="object-cover"
+              unoptimized
+              sizes="64px"
+            />
           </div>
           <span className="max-w-[200px] truncate text-xs text-zinc-500">{url}</span>
           <button

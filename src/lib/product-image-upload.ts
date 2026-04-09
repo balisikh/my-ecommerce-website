@@ -27,6 +27,7 @@ export async function storeProductImage(buffer: Buffer, mimeType: string): Promi
   const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
   const isProduction = process.env.NODE_ENV === "production";
   const isVercel = Boolean(process.env.VERCEL);
+  const blobAccess = (process.env.BLOB_ACCESS ?? "public").toLowerCase();
 
   // Writing to the local filesystem is fine for local dev, but it is not durable on
   // most production hosts (especially serverless). Fail fast so we never persist
@@ -39,11 +40,17 @@ export async function storeProductImage(buffer: Buffer, mimeType: string): Promi
 
   if (blobToken) {
     const { put } = await import("@vercel/blob");
+    const access = blobAccess === "private" ? "private" : "public";
     const blob = await put(`products/${filename}`, buffer, {
-      access: "public",
+      access,
       token: blobToken,
       contentType: mimeType,
     });
+    // If the store is private, the returned URL is not publicly fetchable.
+    // Return a stable app URL that streams the private blob server-side.
+    if (access === "private") {
+      return `/api/media/blob?pathname=${encodeURIComponent(blob.pathname)}`;
+    }
     return blob.url;
   }
 

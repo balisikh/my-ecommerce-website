@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { auth } from "@/auth";
 import { getCartForViewer } from "@/lib/cart";
+import { publicImageUrl } from "@/lib/public-image-url";
 import { formatMoney } from "@/lib/utils";
 import CartLineControls from "@/components/cart-line-controls";
 import ClearCartButton from "@/components/clear-cart-button";
@@ -42,7 +43,7 @@ export default async function CartPage() {
               <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800">
                 {img ? (
                   <Image
-                    src={img.url}
+                    src={publicImageUrl(img.url)}
                     alt={img.alt ?? line.product.title}
                     fill
                     unoptimized

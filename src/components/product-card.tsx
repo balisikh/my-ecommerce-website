@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
+import { publicImageUrl } from "@/lib/public-image-url";
 import { formatMoney } from "@/lib/utils";
 
 type ProductCardProps = {
@@ -23,7 +24,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <div className="relative aspect-square bg-zinc-100 dark:bg-zinc-800">
         {img ? (
           <Image
-            src={img.url}
+            src={publicImageUrl(img.url)}
             alt={img.alt ?? product.title}
             fill
             unoptimized

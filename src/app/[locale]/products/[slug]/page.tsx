@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
+import { publicImageUrl } from "@/lib/public-image-url";
 import { formatMoney } from "@/lib/utils";
 import { Link } from "@/i18n/routing";
 import AddToCartButton from "@/components/add-to-cart-button";
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: product.title,
     description: product.description.slice(0, 160),
     openGraph: product.images[0]
-      ? { images: [product.images[0].url] }
+      ? { images: [publicImageUrl(product.images[0].url)] }
       : undefined,
   };
 }
@@ -46,7 +47,7 @@ export default async function ProductPage({ params }: Props) {
           <div className="relative aspect-square overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800">
             {product.images[0] ? (
               <Image
-                src={product.images[0].url}
+                src={publicImageUrl(product.images[0].url)}
                 alt={product.images[0].alt ?? product.title}
                 fill
                 unoptimized
@@ -61,7 +62,7 @@ export default async function ProductPage({ params }: Props) {
               {product.images.slice(1).map((im) => (
                 <div key={im.id} className="relative h-20 w-20 shrink-0 overflow-hidden rounded-md">
                   <Image
-                    src={im.url}
+                    src={publicImageUrl(im.url)}
                     alt={im.alt ?? ""}
                     fill
                     unoptimized
