@@ -3,6 +3,11 @@ import { CouponType } from "@prisma/client";
 import { adminCreateCoupon } from "../actions";
 import { formatMoney } from "@/lib/utils";
 
+async function createCouponAction(formData: FormData): Promise<void> {
+  "use server";
+  await adminCreateCoupon(formData);
+}
+
 export default async function AdminCouponsPage() {
   const coupons = await prisma.coupon.findMany({
     orderBy: [{ expiresAt: "asc" }, { code: "asc" }],
@@ -14,7 +19,7 @@ export default async function AdminCouponsPage() {
         <h1 className="text-2xl font-bold">Coupons</h1>
       </div>
 
-      <form action={adminCreateCoupon} className="mt-6 grid max-w-2xl gap-3 sm:grid-cols-2">
+      <form action={createCouponAction} className="mt-6 grid max-w-2xl gap-3 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <label className="text-sm font-medium">Code</label>
           <input
