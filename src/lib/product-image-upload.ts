@@ -24,11 +24,24 @@ export async function storeProductImage(buffer: Buffer, mimeType: string): Promi
   }
   const filename = `${randomUUID()}${ext}`;
 
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
+  const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
+  const isProduction = process.env.NODE_ENV === "production";
+  const isVercel = Boolean(process.env.VERCEL);
+
+  // Writing to the local filesystem is fine for local dev, but it is not durable on
+  // most production hosts (especially serverless). Fail fast so we never persist
+  // broken URLs like `/uploads/...` into the database in production.
+  if ((isProduction || isVercel) && !blobToken) {
+    throw new Error(
+      "Missing BLOB_READ_WRITE_TOKEN. Configure Vercel Blob for product image uploads in production.",
+    );
+  }
+
+  if (blobToken) {
     const { put } = await import("@vercel/blob");
     const blob = await put(`products/${filename}`, buffer, {
       access: "public",
-      token: process.env.BLOB_READ_WRITE_TOKEN,
+      token: blobToken,
       contentType: mimeType,
     });
     return blob.url;
