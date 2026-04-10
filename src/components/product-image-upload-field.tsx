@@ -6,12 +6,13 @@ import { toast } from "sonner";
 import { publicImageUrl } from "@/lib/public-image-url";
 
 type Props = {
-  /** Existing image URLs (edit screen) — shown as read-only previews, not re-submitted */
+  /** Existing image URLs (edit screen) */
   existingUrls?: string[];
 };
 
 export default function ProductImageUploadField({ existingUrls = [] }: Props) {
   const [pending, setPending] = useState(false);
+  const [existing, setExisting] = useState<string[]>(existingUrls);
   const [uploaded, setUploaded] = useState<string[]>([]);
 
   const uploadFiles = useCallback(async (files: FileList | null) => {
@@ -42,21 +43,24 @@ export default function ProductImageUploadField({ existingUrls = [] }: Props) {
     }
   }, []);
 
+  function removeExisting(url: string) {
+    setExisting((prev) => prev.filter((u) => u !== url));
+  }
+
   function removeUploaded(url: string) {
     setUploaded((prev) => prev.filter((u) => u !== url));
   }
 
   return (
     <div className="space-y-3">
-      {existingUrls.length > 0 ? (
+      {existing.length > 0 ? (
         <div>
           <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Current images</p>
           <ul className="mt-2 flex flex-wrap gap-2">
-            {existingUrls.map((url) => (
-              <li
-                key={url}
-                className="relative h-20 w-20 overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700"
-              >
+            {existing.map((url) => (
+              <li key={url} className="relative h-20 w-20">
+                <input type="hidden" name="imageUrls" value={url} />
+                <div className="relative h-20 w-20 overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700">
                 <Image
                   src={publicImageUrl(url)}
                   alt=""
@@ -65,6 +69,14 @@ export default function ProductImageUploadField({ existingUrls = [] }: Props) {
                   unoptimized
                   sizes="80px"
                 />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeExisting(url)}
+                  className="absolute right-1 top-1 rounded bg-white/90 px-1.5 py-0.5 text-[11px] font-medium text-red-700 shadow-sm ring-1 ring-black/5 hover:bg-white dark:bg-zinc-900/90 dark:text-red-300 dark:ring-white/10"
+                >
+                  Remove
+                </button>
               </li>
             ))}
           </ul>

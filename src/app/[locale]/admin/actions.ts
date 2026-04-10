@@ -123,18 +123,15 @@ export async function adminUpdateProduct(
     return { ok: false, error: "Could not update product.", code: "validation" };
   }
 
-  const newImageUrls = collectImageUrlsFromForm(formData);
-  if (newImageUrls.length) {
-    const maxPos = await prisma.productImage.aggregate({
-      where: { productId },
-      _max: { position: true },
+  // The form submits the full desired image list (including existing images that weren't removed).
+  // Sync DB to match exactly what was submitted.
+  const desiredImageUrls = collectImageUrlsFromForm(formData);
+  await prisma.productImage.deleteMany({ where: { productId } });
+  let position = 0;
+  for (const url of desiredImageUrls) {
+    await prisma.productImage.create({
+      data: { productId, url, alt: title, position: position++ },
     });
-    let position = (maxPos._max.position ?? -1) + 1;
-    for (const url of newImageUrls) {
-      await prisma.productImage.create({
-        data: { productId, url, alt: title, position: position++ },
-      });
-    }
   }
 
   revalidatePath("/en/products");
