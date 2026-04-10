@@ -27,7 +27,9 @@ export async function storeProductImage(buffer: Buffer, mimeType: string): Promi
   const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
   const isProduction = process.env.NODE_ENV === "production";
   const isVercel = Boolean(process.env.VERCEL);
-  const blobAccess = (process.env.BLOB_ACCESS ?? "public").toLowerCase();
+  // Default to private on Vercel to match the common store configuration there.
+  // Local dev still defaults to public so it’s easy to inspect uploaded files if desired.
+  const blobAccess = (process.env.BLOB_ACCESS ?? (isVercel ? "private" : "public")).toLowerCase();
 
   // Writing to the local filesystem is fine for local dev, but it is not durable on
   // most production hosts (especially serverless). Fail fast so we never persist
