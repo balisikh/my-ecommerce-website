@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document
+  xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+  xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0"
+  xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+  xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
+  office:version="1.2"
+  office:mimetype="application/vnd.oasis.opendocument.text"
+>
+  <office:styles>
+    <style:style style:name="Title" style:family="paragraph">
+      <style:paragraph-properties fo:text-align="center" fo:margin-bottom="6mm"/>
+      <style:text-properties fo:font-size="20pt" fo:font-weight="bold"/>
+    </style:style>
+    <style:style style:name="H1" style:family="paragraph">
+      <style:paragraph-properties fo:margin-top="5mm" fo:margin-bottom="2mm"/>
+      <style:text-properties fo:font-size="14pt" fo:font-weight="bold"/>
+    </style:style>
+    <style:style style:name="H2" style:family="paragraph">
+      <style:paragraph-properties fo:margin-top="3mm" fo:margin-bottom="1mm"/>
+      <style:text-properties fo:font-size="12pt" fo:font-weight="bold"/>
+    </style:style>
+    <style:style style:name="Body" style:family="paragraph">
+      <style:paragraph-properties fo:margin-bottom="1.5mm"/>
+      <style:text-properties fo:font-size="10.5pt"/>
+    </style:style>
+    <style:style style:name="Code" style:family="paragraph">
+      <style:paragraph-properties fo:margin-bottom="1mm" fo:background-color="#F6F6F6" fo:padding="2mm"/>
+      <style:text-properties fo:font-size="9.5pt" style:font-name="Courier New"/>
+    </style:style>
+    <style:style style:name="Bullet" style:family="paragraph">
+      <style:paragraph-properties fo:margin-left="6mm" fo:text-indent="-3mm" fo:margin-bottom="1mm"/>
+      <style:text-properties fo:font-size="10.5pt"/>
+    </style:style>
+  </office:styles>
+
+  <office:body>
+    <office:text>
+      <text:p text:style-name="Title">Marketplace E‑commerce Website — Project Documentation</text:p>
+      <text:p text:style-name="Body">Project: my-ecommerce-website</text:p>
+      <text:p text:style-name="Body">Stack: Next.js (App Router), NextAuth (credentials), Prisma (PostgreSQL), Stripe (Checkout + Connect + Webhooks), next-intl (i18n), Tailwind CSS + Radix UI</text:p>
+
+      <text:p text:style-name="H1">1. What this project is</text:p>
+      <text:p text:style-name="Body">This is an Amazon-style marketplace web app with a product catalog, cart and checkout, customer accounts, seller onboarding with Stripe Connect, and an admin area for managing products, coupons, orders, and analytics.</text:p>
+
+      <text:p text:style-name="H1">2. Key features (implemented)</text:p>
+      <text:p text:style-name="H2">2.1 Customer features</text:p>
+      <text:p text:style-name="Bullet">• Browse catalog and product details (slug routes)</text:p>
+      <text:p text:style-name="Bullet">• Search products</text:p>
+      <text:p text:style-name="Bullet">• Cart with guest support (cookie session) and logged-in carts</text:p>
+      <text:p text:style-name="Bullet">• Checkout via Stripe Checkout sessions (payment mode)</text:p>
+      <text:p text:style-name="Bullet">• Coupon validation and discounts applied at checkout</text:p>
+      <text:p text:style-name="Bullet">• Reviews: read reviews and post/update review (verified purchase detection)</text:p>
+      <text:p text:style-name="Bullet">• Wishlist: add/remove items; check if product is on list</text:p>
+      <text:p text:style-name="Bullet">• Account area: order history page</text:p>
+      <text:p text:style-name="Bullet">• Data export endpoint (orders, addresses, reviews, wishlist)</text:p>
+
+      <text:p text:style-name="H2">2.2 Subscriptions</text:p>
+      <text:p text:style-name="Bullet">• Subscription checkout for subscription-eligible products (Stripe Checkout subscription mode)</text:p>
+      <text:p text:style-name="Bullet">• Subscription sync via Stripe webhooks; entitlement key subscription_active</text:p>
+      <text:p text:style-name="Bullet">• Subscriptions page</text:p>
+
+      <text:p text:style-name="H2">2.3 Seller features</text:p>
+      <text:p text:style-name="Bullet">• Seller dashboard pages and navigation</text:p>
+      <text:p text:style-name="Bullet">• Stripe Connect onboarding flow (Express accounts)</text:p>
+      <text:p text:style-name="Bullet">• Seller products page</text:p>
+      <text:p text:style-name="Bullet">• Seller orders page</text:p>
+      <text:p text:style-name="Body">Note: Seller area is role-protected (SELLER or ADMIN).</text:p>
+
+      <text:p text:style-name="H2">2.4 Admin features</text:p>
+      <text:p text:style-name="Bullet">• Admin dashboard and navigation</text:p>
+      <text:p text:style-name="Bullet">• Product management pages (list, view/edit by id, create new)</text:p>
+      <text:p text:style-name="Bullet">• Coupon management page</text:p>
+      <text:p text:style-name="Bullet">• Orders page</text:p>
+      <text:p text:style-name="Bullet">• Analytics page</text:p>
+      <text:p text:style-name="Body">Note: Admin area is role-protected (ADMIN).</text:p>
+
+      <text:p text:style-name="H2">2.5 Images / media</text:p>
+      <text:p text:style-name="Bullet">• Product image upload endpoint (multipart) for ADMIN/SELLER</text:p>
+      <text:p text:style-name="Bullet">• Optional Vercel Blob support (including private Blob streaming via /api/media/blob)</text:p>
+
+      <text:p text:style-name="H2">2.6 Internationalization (i18n)</text:p>
+      <text:p text:style-name="Bullet">• Locale routes implemented via /[locale]/…</text:p>
+      <text:p text:style-name="Bullet">• next-intl provider in the locale layout</text:p>
+
+      <text:p text:style-name="H1">3. Main pages / routes (UI)</text:p>
+      <text:p text:style-name="Body">All UI routes below are under /[locale]/… (example: /en/products).</text:p>
+      <text:p text:style-name="Bullet">• Home: /[locale]/</text:p>
+      <text:p text:style-name="Bullet">• Products: /[locale]/products</text:p>
+      <text:p text:style-name="Bullet">• Product details: /[locale]/products/[slug]</text:p>
+      <text:p text:style-name="Bullet">• Search: /[locale]/search</text:p>
+      <text:p text:style-name="Bullet">• Cart: /[locale]/cart</text:p>
+      <text:p text:style-name="Bullet">• Checkout: /[locale]/checkout</text:p>
+      <text:p text:style-name="Bullet">• Checkout success: /[locale]/checkout/success</text:p>
+      <text:p text:style-name="Bullet">• Wishlist: /[locale]/wishlist</text:p>
+      <text:p text:style-name="Bullet">• Subscriptions: /[locale]/subscriptions</text:p>
+      <text:p text:style-name="Bullet">• Auth: /[locale]/login, /[locale]/register</text:p>
+      <text:p text:style-name="Bullet">• Account orders: /[locale]/account/orders</text:p>
+      <text:p text:style-name="Bullet">• Seller: /[locale]/seller, /[locale]/seller/onboarding, /[locale]/seller/products, /[locale]/seller/orders</text:p>
+      <text:p text:style-name="Bullet">• Admin: /[locale]/admin, /[locale]/admin/products, /[locale]/admin/products/new, /[locale]/admin/products/[id], /[locale]/admin/orders, /[locale]/admin/coupons, /[locale]/admin/analytics</text:p>
+      <text:p text:style-name="Bullet">• Policies: /[locale]/policies/privacy, /[locale]/policies/seller-terms</text:p>
+
+      <text:p text:style-name="H1">4. API endpoints (server routes)</text:p>
+      <text:p text:style-name="Body">The app uses Next.js route handlers under /api/… .</text:p>
+      <text:p text:style-name="Bullet">• Auth: POST /api/auth/register (create customer), GET/POST /api/auth/[...nextauth] (NextAuth)</text:p>
+      <text:p text:style-name="Bullet">• Cart: POST /api/cart (add item), PATCH /api/cart (update qty / remove), DELETE /api/cart (clear)</text:p>
+      <text:p text:style-name="Bullet">• Wishlist: GET/POST/DELETE /api/wishlist</text:p>
+      <text:p text:style-name="Bullet">• Reviews: GET/POST /api/reviews</text:p>
+      <text:p text:style-name="Bullet">• Coupons: GET /api/coupon?code=…</text:p>
+      <text:p text:style-name="Bullet">• Checkout (one-time purchase): POST /api/checkout</text:p>
+      <text:p text:style-name="Bullet">• Checkout (subscription): POST /api/checkout/subscription</text:p>
+      <text:p text:style-name="Bullet">• Stripe webhooks: POST /api/webhooks/stripe</text:p>
+      <text:p text:style-name="Bullet">• Seller onboarding: POST /api/seller/connect</text:p>
+      <text:p text:style-name="Bullet">• Upload product image: POST /api/upload/product-image</text:p>
+      <text:p text:style-name="Bullet">• Private Blob streaming: GET /api/media/blob?pathname=…</text:p>
+      <text:p text:style-name="Bullet">• Account export: GET /api/account/export</text:p>
+
+      <text:p text:style-name="H1">5. Data model (Prisma / PostgreSQL)</text:p>
+      <text:p text:style-name="Body">Core entities:</text:p>
+      <text:p text:style-name="Bullet">• Users with roles: CUSTOMER, SELLER, ADMIN</text:p>
+      <text:p text:style-name="Bullet">• Sellers (shop profile + Stripe Connect account id + verification status)</text:p>
+      <text:p text:style-name="Bullet">• Products, categories, product images</text:p>
+      <text:p text:style-name="Bullet">• Cart + cart items (supports guest carts via sessionId and logged-in carts via userId)</text:p>
+      <text:p text:style-name="Bullet">• Orders + order lines (orders are stored per-seller; checkout can split a single paid session into multiple seller orders)</text:p>
+      <text:p text:style-name="Bullet">• Reviews (one review per user+product), verifiedPurchase flag</text:p>
+      <text:p text:style-name="Bullet">• Wishlist items</text:p>
+      <text:p text:style-name="Bullet">• Coupons + redemptions</text:p>
+      <text:p text:style-name="Bullet">• Subscriptions + subscription entitlements (key: subscription_active)</text:p>
+      <text:p text:style-name="Bullet">• StripeEvent table for webhook idempotency</text:p>
+
+      <text:p text:style-name="H1">6. Authentication and authorization</text:p>
+      <text:p text:style-name="Body">Authentication is handled by NextAuth using a credentials provider (email + password hash). Sessions are JWT-based. Role-based access is enforced in server layouts for /admin and /seller.</text:p>
+
+      <text:p text:style-name="H1">7. Payments and Stripe</text:p>
+      <text:p text:style-name="H2">7.1 One-time checkout</text:p>
+      <text:p text:style-name="Body">A logged-in user can create a Stripe Checkout session for cart items. The checkout payload includes shipping, optional tax estimation (when Stripe Tax is off), and optional coupons. If the cart contains items from a single seller with Stripe Connect configured, the payment intent includes an application fee and transfer destination.</text:p>
+      <text:p text:style-name="H2">7.2 Webhooks</text:p>
+      <text:p text:style-name="Body">Stripe webhooks finalize orders, decrement stock, split orders per seller, record coupon redemption, clear cart, and sync subscription lifecycle events.</text:p>
+
+      <text:p text:style-name="H1">8. Environment variables</text:p>
+      <text:p text:style-name="Body">Create a .env file based on .env.example. Key variables:</text:p>
+      <text:p text:style-name="Bullet">• DATABASE_URL: PostgreSQL connection string</text:p>
+      <text:p text:style-name="Bullet">• NEXTAUTH_SECRET, NEXTAUTH_URL</text:p>
+      <text:p text:style-name="Bullet">• NEXT_PUBLIC_APP_URL: public base URL (used for Stripe redirects)</text:p>
+      <text:p text:style-name="Bullet">• STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY</text:p>
+      <text:p text:style-name="Bullet">• STRIPE_ENABLE_TAX, TAX_BPS (optional estimated tax)</text:p>
+      <text:p text:style-name="Bullet">• BLOB_READ_WRITE_TOKEN, BLOB_ACCESS (optional Vercel Blob)</text:p>
+
+      <text:p text:style-name="H1">9. Local setup (developer)</text:p>
+      <text:p text:style-name="Body">Commands (npm):</text:p>
+      <text:p text:style-name="Code">npm install</text:p>
+      <text:p text:style-name="Code">npm run db:push</text:p>
+      <text:p text:style-name="Code">npm run db:seed</text:p>
+      <text:p text:style-name="Code">npm run dev</text:p>
+      <text:p text:style-name="Body">Optional: Prisma Studio</text:p>
+      <text:p text:style-name="Code">npm run db:studio</text:p>
+
+      <text:p text:style-name="H2">9.1 Seeded demo accounts</text:p>
+      <text:p text:style-name="Body">The seed script creates demo users (all with password demo1234):</text:p>
+      <text:p text:style-name="Bullet">• admin@example.com (ADMIN)</text:p>
+      <text:p text:style-name="Bullet">• customer@example.com (CUSTOMER)</text:p>
+      <text:p text:style-name="Bullet">• platform@example.com (SELLER, “Marketplace Official”)</text:p>
+      <text:p text:style-name="Bullet">• seller@example.com (SELLER, “Partner Goods Co”)</text:p>
+
+      <text:p text:style-name="H1">10. Notes and constraints</text:p>
+      <text:p text:style-name="Bullet">• Currency amounts are stored as integers (cents) in the database and Stripe line items.</text:p>
+      <text:p text:style-name="Bullet">• Cart supports guest sessions via an HTTP-only cookie.</text:p>
+      <text:p text:style-name="Bullet">• Reviews are limited to one per user per product (upsert).</text:p>
+      <text:p text:style-name="Bullet">• Webhook handler uses a StripeEvent table for idempotency.</text:p>
+
+      <text:p text:style-name="Body">End of document.</text:p>
+    </office:text>
+  </office:body>
+</office:document>
