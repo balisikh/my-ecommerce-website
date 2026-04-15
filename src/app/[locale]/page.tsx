@@ -3,6 +3,9 @@ import { Link } from "@/i18n/routing";
 import prisma from "@/lib/prisma";
 import ProductCard from "@/components/product-card";
 
+/** Cache this page in production so repeat visits are fast (dev is still slower on purpose). */
+export const revalidate = 60;
+
 export default async function HomePage() {
   const t = await getTranslations("home");
   const products = await prisma.product.findMany({

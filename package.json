@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "prisma generate && next build",
     "start": "next start",
+    "preview": "npm run build && npm start",
     "lint": "eslint",
     "postinstall": "prisma generate",
     "docs:pdf": "node scripts/export-marketplace-docs-pdf.mjs",
