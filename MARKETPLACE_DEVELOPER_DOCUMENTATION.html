@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Marketplace — Developer Documentation</title>
+    <style>
+      :root {
+        --text: #111827;
+        --muted: #6b7280;
+        --border: #d1d5db;
+        --bg: #ffffff;
+        --callout-bg: #f9fafb;
+        --code-bg: #f3f4f6;
+        --frame-bg: #fbfbfb;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Helvetica,
+          Arial,
+          "Apple Color Emoji",
+          "Segoe UI Emoji";
+        line-height: 1.45;
+      }
+
+      .page {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 36px 22px 80px;
+      }
+
+      h1 {
+        font-size: 30px;
+        margin: 0 0 6px;
+        letter-spacing: -0.02em;
+      }
+
+      h2 {
+        font-size: 18px;
+        margin: 28px 0 10px;
+        letter-spacing: -0.01em;
+      }
+
+      h3 {
+        font-size: 14px;
+        margin: 18px 0 8px;
+        text-transform: none;
+      }
+
+      p {
+        margin: 8px 0;
+      }
+
+      .meta {
+        color: var(--muted);
+        font-size: 12.5px;
+        margin-bottom: 14px;
+      }
+
+      .rule {
+        height: 1px;
+        background: var(--border);
+        margin: 16px 0 18px;
+      }
+
+      .callout {
+        border: 1px solid var(--border);
+        background: var(--callout-bg);
+        padding: 12px 12px;
+        border-radius: 10px;
+      }
+
+      code,
+      pre {
+        font-family:
+          ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          Monaco,
+          Consolas,
+          "Liberation Mono",
+          "Courier New",
+          monospace;
+      }
+
+      code {
+        background: var(--code-bg);
+        padding: 1px 6px;
+        border-radius: 6px;
+        font-size: 0.95em;
+      }
+
+      pre {
+        background: var(--code-bg);
+        padding: 12px;
+        border-radius: 10px;
+        overflow: auto;
+        margin: 10px 0;
+        font-size: 12.5px;
+      }
+
+      ul {
+        margin: 8px 0 8px 18px;
+      }
+
+      li {
+        margin: 4px 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 10px 0;
+        font-size: 13px;
+      }
+
+      th,
+      td {
+        border: 1px solid var(--border);
+        padding: 9px 10px;
+        vertical-align: top;
+      }
+
+      th {
+        text-align: left;
+        background: #f8fafc;
+      }
+
+      .frame {
+        border: 2px dashed #b7bcc6;
+        border-radius: 12px;
+        background: var(--frame-bg);
+        padding: 12px;
+        min-height: 220px;
+        margin: 10px 0 16px;
+      }
+
+      .frame .frame-title {
+        font-size: 12.5px;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+
+      .frame .hint {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .small {
+        font-size: 12.5px;
+        color: var(--muted);
+      }
+
+      .kbd {
+        border: 1px solid var(--border);
+        padding: 1px 7px;
+        border-radius: 8px;
+        background: #fff;
+        font-family:
+          ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          Monaco,
+          Consolas,
+          "Liberation Mono",
+          "Courier New",
+          monospace;
+        font-size: 12px;
+      }
+
+      @media print {
+        .page {
+          padding: 18mm 16mm 22mm;
+        }
+        a {
+          color: inherit;
+          text-decoration: none;
+        }
+        .frame {
+          break-inside: avoid;
+        }
+        pre {
+          break-inside: avoid;
+        }
+        h2,
+        h3 {
+          break-after: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1>Marketplace E-commerce Website — Developer Documentation</h1>
+      <div class="meta">
+        Project: <strong>my-ecommerce-website</strong> · Stack: Next.js (App Router), NextAuth
+        (credentials), Prisma (PostgreSQL), Stripe (Checkout + Connect + Webhooks), next-intl (i18n),
+        Tailwind CSS + Radix UI
+        <br />
+        Audience: developer handover (implementation notes, lifecycle steps, screenshot frames, and
+        how to demonstrate each feature)
+      </div>
+
+      <div class="callout">
+        <strong>How to save this document as a PDF</strong>
+        <div class="small" style="margin-top: 6px">
+          Open this file in Chrome or Edge, press <span class="kbd">Ctrl</span> +
+          <span class="kbd">P</span> (Mac: <span class="kbd">Cmd</span> +
+          <span class="kbd">P</span>), choose <strong>Save as PDF</strong> (or
+          <strong>Microsoft Print to PDF</strong>), then save. For the best layout, enable
+          <strong>Background graphics</strong> if your browser offers it.
+        </div>
+      </div>
+
+      <div class="rule"></div>
+
+      <h2>1. What this project is</h2>
+      <p>
+        This is an Amazon-style marketplace web app with a product catalog, cart and checkout,
+        customer accounts, seller onboarding with Stripe Connect, and an admin area for managing
+        products, coupons, orders, and analytics.
+      </p>
+
+      <h2>2. Project lifecycle: planning → creating → developing → testing</h2>
+      <p class="small">
+        After each step below, capture a screenshot and paste it into the dashed frame. This gives you
+        a complete visual record from idea to verified behavior.
+      </p>
+
+      <h3>2.1 Planning</h3>
+      <p>
+        Goal: agree on scope, data, payments, and roles before writing code. Deliverables: entity
+        list, main user journeys, and environment checklist.
+      </p>
+      <p><strong>Step P1</strong>: List actors (customer, seller, admin) and primary flows.</p>
+      <ul>
+        <li>Browse → cart → checkout</li>
+        <li>Seller onboarding (Stripe Connect)</li>
+        <li>Admin catalog + operations</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure P1 — Planning artifact</div>
+        <div class="hint">
+          Screenshot area — capture this step from your screen and paste here (or overlay in a PDF
+          editor). Example: whiteboard, Notion page, or simple diagram of user flows.
+        </div>
+      </div>
+
+      <p>
+        <strong>Step P2</strong>: Sketch the data model (align to
+        <code>prisma/schema.prisma</code>).
+      </p>
+      <ul>
+        <li>User + Role (CUSTOMER / SELLER / ADMIN)</li>
+        <li>Seller (shop profile + Stripe Connect account id)</li>
+        <li>Product, Category, ProductImage</li>
+        <li>Cart (guest via cookie sessionId + logged-in via userId)</li>
+        <li>Order + OrderLine (split per seller)</li>
+        <li>Coupon + CouponRedemption</li>
+        <li>Review + WishlistItem</li>
+        <li>Subscription + SubscriptionEntitlement</li>
+        <li>StripeEvent (webhook idempotency)</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure P2 — Schema / ER</div>
+        <div class="hint">
+          Screenshot area — capture a screenshot of the Prisma schema in the IDE, or Prisma Studio
+          showing tables after seed.
+        </div>
+      </div>
+
+      <p>
+        <strong>Step P3</strong>: Define payments (Stripe Checkout + Stripe Connect + Webhooks).
+      </p>
+      <ul>
+        <li>One-time purchases: <code>POST /api/checkout</code> → Stripe Checkout (payment mode)</li>
+        <li>Subscriptions: <code>POST /api/checkout/subscription</code> → Stripe Checkout (subscription)</li>
+        <li>Webhook: <code>POST /api/webhooks/stripe</code> (Checkout + Subscription lifecycle)</li>
+        <li>Test vs live keys in env (never commit real secrets)</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure P3 — Stripe + env plan</div>
+        <div class="hint">
+          Screenshot area — capture a screenshot of <code>.env.example</code> or a checklist table
+          (without real secret values).
+        </div>
+      </div>
+
+      <p>
+        <strong>Step P4</strong>: Plan i18n (supported locales + URL shape under
+        <code>/[locale]/…</code>).
+      </p>
+      <ul>
+        <li>Locales: <code>en</code>, <code>fr</code> (see <code>src/i18n/routing.ts</code>)</li>
+        <li>Locale segment layout: <code>src/app/[locale]/layout.tsx</code></li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure P4 — Locale routing</div>
+        <div class="hint">
+          Screenshot area — capture <code>src/i18n/routing.ts</code> or the
+          <code>src/app/[locale]/</code> folder in the repo.
+        </div>
+      </div>
+
+      <h3>2.2 Creating (project setup)</h3>
+      <p>
+        Goal: runnable app on your machine with database and seeded data. Deliverables: dependencies
+        installed, DB migrated, dev server up.
+      </p>
+
+      <p><strong>Step C1</strong>: Install dependencies.</p>
+      <pre>npm install</pre>
+      <div class="frame">
+        <div class="frame-title">Figure C1 — npm install</div>
+        <div class="hint">Terminal showing successful <code>npm install</code> at project root.</div>
+      </div>
+
+      <p>
+        <strong>Step C2</strong>: Configure PostgreSQL and create <code>.env</code> from
+        <code>.env.example</code>; set <code>DATABASE_URL</code>.
+      </p>
+      <div class="frame">
+        <div class="frame-title">Figure C2 — Environment file</div>
+        <div class="hint">
+          Editor showing <code>DATABASE_URL</code> and placeholders (blur secrets if sharing).
+        </div>
+      </div>
+
+      <p><strong>Step C3</strong>: Apply schema and seed.</p>
+      <pre>npm run db:push
+npm run db:seed</pre>
+      <div class="frame">
+        <div class="frame-title">Figure C3 — DB push and seed</div>
+        <div class="hint">
+          Terminal output ending with <code>Seed OK</code> or similar.
+        </div>
+      </div>
+
+      <p><strong>Step C4</strong>: Start the app and open the locale route.</p>
+      <pre>npm run dev</pre>
+      <p class="small">Then open <code>http://localhost:3000/en</code>.</p>
+      <div class="frame">
+        <div class="frame-title">Figure C4 — App running</div>
+        <div class="hint">Browser showing the marketplace home or products page.</div>
+      </div>
+
+      <h3>2.3 Developing</h3>
+      <p>
+        Goal: implement or extend features using App Router pages, route handlers under
+        <code>src/app/api</code>, and Prisma. Work in small slices: API → UI → webhook if needed.
+      </p>
+
+      <p><strong>Step D1</strong>: Pick a feature (example: cart) and locate API + UI.</p>
+      <ul>
+        <li>API route: <code>src/app/api/cart/route.ts</code></li>
+        <li>UI: cart page under <code>src/app/[locale]/cart</code> (and header cart badge)</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure D1 — Code navigation</div>
+        <div class="hint">
+          IDE showing the API route + related page component side by side.
+        </div>
+      </div>
+
+      <p><strong>Step D2</strong>: Confirm API calls in DevTools Network tab.</p>
+      <ul>
+        <li>Example: <code>POST /api/cart</code> returns <code>200</code> with JSON <code>{ ok: true }</code></li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure D2 — Network tab</div>
+        <div class="hint">
+          DevTools Network entry for <code>/api/cart</code> with 200 response.
+        </div>
+      </div>
+
+      <p><strong>Step D3</strong>: Stripe flow demo (Checkout redirect).</p>
+      <ul>
+        <li>Set <code>STRIPE_SECRET_KEY</code> and <code>NEXT_PUBLIC_APP_URL</code> in <code>.env</code></li>
+        <li>Trigger Checkout and confirm redirect to the Stripe-hosted page</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure D3 — Stripe Checkout</div>
+        <div class="hint">Browser on Stripe test Checkout page after redirect from your app.</div>
+      </div>
+
+      <h3>2.4 Testing (verify behavior)</h3>
+      <p>
+        Goal: prove each feature works end-to-end. Combine manual UI tests, API checks, database
+        inspection, and Stripe test mode.
+      </p>
+
+      <p><strong>Step T1</strong>: Smoke test.</p>
+      <ul>
+        <li>Register, login, browse products</li>
+        <li>Add to cart (guest and logged-in)</li>
+        <li>Open wishlist and reviews</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure T1 — Smoke test</div>
+        <div class="hint">Any key screen showing success (e.g. cart with line items).</div>
+      </div>
+
+      <p><strong>Step T2</strong>: Checkout test.</p>
+      <ul>
+        <li>Complete payment with Stripe test card <code>4242 4242 4242 4242</code></li>
+        <li>Land on <code>/en/checkout/success</code></li>
+        <li>See orders under account</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure T2 — Order confirmation</div>
+        <div class="hint">Checkout success page or account orders list.</div>
+      </div>
+
+      <p><strong>Step T3</strong>: Webhook test (Stripe CLI) + DB proof.</p>
+      <pre>stripe listen --forward-to localhost:3000/api/webhooks/stripe</pre>
+      <div class="frame">
+        <div class="frame-title">Figure T3 — Webhook or DB proof</div>
+        <div class="hint">
+          Stripe CLI output showing event received, or Prisma Studio Order table.
+        </div>
+      </div>
+
+      <p><strong>Step T4</strong>: Role test.</p>
+      <ul>
+        <li>Login as <code>admin@example.com</code> → open <code>/en/admin</code></li>
+        <li>Login as <code>seller@example.com</code> → open <code>/en/seller</code></li>
+        <li>Confirm unauthorized users are redirected to login with <code>callbackUrl</code></li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure T4 — Admin or seller dashboard</div>
+        <div class="hint">
+          Protected area visible only with the correct role.
+        </div>
+      </div>
+
+      <h2>3. Quick start (local dev)</h2>
+      <p>Prereqs: Node.js, npm, PostgreSQL, and (optional) Stripe CLI for webhook forwarding.</p>
+      <pre>npm install
+copy .env.example .env
+npm run db:push
+npm run db:seed
+npm run dev</pre>
+      <p class="small">Optional database UI: <code>npm run db:studio</code></p>
+
+      <h3>3.1 Seeded demo accounts</h3>
+      <p class="small">Seed password for all accounts: <strong>demo1234</strong></p>
+      <ul>
+        <li><code>admin@example.com</code> (ADMIN)</li>
+        <li><code>customer@example.com</code> (CUSTOMER)</li>
+        <li><code>platform@example.com</code> (SELLER, “Marketplace Official”)</li>
+        <li><code>seller@example.com</code> (SELLER, “Partner Goods Co”)</li>
+      </ul>
+
+      <h2>4. System overview (developer)</h2>
+
+      <h3>4.1 Routing + layouts</h3>
+      <p>
+        The UI uses locale-prefixed routing under <code>/[locale]/…</code> with next-intl (see
+        <code>src/app/[locale]/layout.tsx</code> and <code>src/i18n/routing.ts</code>). Admin and
+        Seller areas are protected at the layout level using server-side session checks and redirects
+        to login with <code>callbackUrl</code>.
+      </p>
+
+      <h3>4.2 Authentication + roles</h3>
+      <p>
+        Authentication is NextAuth with a credentials provider (email/password). Passwords are stored
+        as bcrypt hashes in <code>User.passwordHash</code>. Sessions use the JWT strategy; the user
+        role is copied into the JWT and then into <code>session.user.role</code> (see
+        <code>src/auth.ts</code>).
+      </p>
+
+      <h3>4.3 Data layer</h3>
+      <p>
+        Prisma models cover users/roles, sellers, products/categories/images, carts (guest + user),
+        orders + order lines, reviews, wishlist, coupons/redemptions, subscriptions/entitlements, and
+        <code>StripeEvent</code> for webhook idempotency (see <code>prisma/schema.prisma</code>).
+      </p>
+
+      <h3>4.4 Payments</h3>
+      <p>
+        Stripe is used for one-time Checkout sessions and subscription Checkout sessions. A webhook
+        handler finalizes paid checkouts, decrements stock, splits a single checkout into per-seller
+        orders, records coupon redemption, clears cart, and syncs subscriptions + entitlements.
+      </p>
+
+      <h2>5. Features: implementation notes + how to demonstrate</h2>
+
+      <h3>5.1 Catalog browsing + product details</h3>
+      <p>
+        <strong>What it is</strong>: A product catalog with detail pages keyed by slug. Products are
+        stored in PostgreSQL (Prisma) with images and category + seller relations.
+      </p>
+      <p>
+        <strong>Key pieces</strong>: product routes under <code>src/app/[locale]/</code>; models
+        <code>Product</code> + <code>ProductImage</code>; seeded products in
+        <code>prisma/seed.ts</code>.
+      </p>
+      <p><strong>How to demonstrate</strong>:</p>
+      <ul>
+        <li>Run seed (<code>npm run db:seed</code>) so products exist.</li>
+        <li>Open <code>/en/products</code> and confirm a product grid renders.</li>
+        <li>Open a product detail page <code>/en/products/&lt;slug&gt;</code>.</li>
+        <li>
+          Optional: reduce <code>Product.stock</code> in Prisma Studio and refresh cart behavior.
+        </li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure 5.1 — Catalog and product detail</div>
+        <div class="hint">
+          Paste a screenshot showing the product list and/or a product detail page after the steps
+          above.
+        </div>
+      </div>
+
+      <h3>5.2 Search</h3>
+      <p><strong>What it is</strong>: A search UI route that queries the catalog and displays results.</p>
+      <p><strong>How to demonstrate</strong>:</p>
+      <ul>
+        <li>Open <code>/en/search</code>.</li>
+        <li>Search for a seeded keyword (e.g., “Coffee” or “Speaker”).</li>
+        <li>Verify results update and link into product details.</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure 5.2 — Search results</div>
+        <div class="hint">Paste a screenshot of the search page with results.</div>
+      </div>
+
+      <h3>5.3 Register + login (NextAuth credentials)</h3>
+      <p>
+        <strong>What it is</strong>: Customer registration via
+        <code>POST /api/auth/register</code> and sign-in via NextAuth credentials provider. Roles are
+        enforced across protected areas.
+      </p>
+      <p><strong>Key pieces</strong>:</p>
+      <ul>
+        <li><code>src/app/api/auth/register/route.ts</code></li>
+        <li><code>src/app/api/auth/[...nextauth]/route.ts</code></li>
+        <li><code>src/auth.ts</code> JWT/session callbacks (role propagation)</li>
+      </ul>
+      <p><strong>How to demonstrate</strong>:</p>
+      <ul>
+        <li>Register a new account from <code>/en/register</code> and confirm success.</li>
+        <li>Login from <code>/en/login</code> and verify session persists on refresh.</li>
+        <li>Try <code>/en/admin</code> as non-admin; confirm redirect.</li>
+        <li>Login as <code>admin@example.com</code> and confirm <code>/en/admin</code> loads.</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure 5.3 — Auth and role protection</div>
+        <div class="hint">Paste a screenshot of login success or admin dashboard after login.</div>
+      </div>
+
+      <h3>5.4 Cart (guest + logged-in) + quantity updates</h3>
+      <p>
+        <strong>What it is</strong>: A cart that works for guests (HTTP-only cookie sessionId) and
+        signed-in users (user cart). Cart supports add, update quantity, remove (quantity 0), and
+        clear.
+      </p>
+      <p><strong>Key pieces</strong>:</p>
+      <ul>
+        <li><code>src/app/api/cart/route.ts</code> (POST/PATCH/DELETE)</li>
+        <li><code>Cart</code> + <code>CartItem</code> models</li>
+        <li>Guest session cookie id via <code>CART_COOKIE</code> (see <code>src/lib/cart</code>)</li>
+      </ul>
+      <p><strong>How to demonstrate</strong>:</p>
+      <ul>
+        <li>Logged out: add a product to cart, open <code>/en/cart</code>.</li>
+        <li>Change quantity; verify stock validation (try beyond stock).</li>
+        <li>Remove a line (set quantity to 0) and verify it disappears.</li>
+        <li>Login and add items; confirm the cart works for the user.</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure 5.4 — Cart</div>
+        <div class="hint">Paste a screenshot of <code>/en/cart</code> with line items.</div>
+      </div>
+
+      <h3>5.5 Checkout (Stripe one-time payments) + success flow</h3>
+      <p>
+        <strong>What it is</strong>: A server endpoint creates a Stripe Checkout session in payment
+        mode for the logged-in user's cart. On completion, the webhook fulfills the order,
+        decrements stock, splits orders per seller, and clears the cart.
+      </p>
+      <p><strong>Key pieces</strong>:</p>
+      <ul>
+        <li><code>POST /api/checkout</code> (creates Checkout session)</li>
+        <li><code>POST /api/webhooks/stripe</code> (<code>checkout.session.completed</code>)</li>
+        <li><code>Order</code>/<code>OrderLine</code> tables (split per seller)</li>
+        <li><code>StripeEvent</code> idempotency table</li>
+      </ul>
+      <p><strong>How to demonstrate</strong>:</p>
+      <ul>
+        <li>Set <code>STRIPE_SECRET_KEY</code> + <code>NEXT_PUBLIC_APP_URL</code> in <code>.env</code>.</li>
+        <li>Login as <code>customer@example.com</code> and add 1–2 products to cart.</li>
+        <li>Go to <code>/en/checkout</code>, enter an address, start checkout (redirect to Stripe).</li>
+        <li>Pay with Stripe test card <code>4242…</code>.</li>
+        <li>
+          Verify redirect to <code>/en/checkout/success</code>, then check
+          <code>/en/account/orders</code> for created orders.
+        </li>
+        <li>Verify cart cleared and product stock decreased (Prisma Studio).</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure 5.5 — Checkout + success</div>
+        <div class="hint">
+          Paste Stripe Checkout and/or checkout success and order history.
+        </div>
+      </div>
+
+      <h3>5.6 Coupons (validate + apply discount)</h3>
+      <p>
+        <strong>What it is</strong>: Coupon validation computes discounts based on cart subtotal and
+        coupon rules. Checkout can create a one-time Stripe coupon to apply discounts to the session.
+      </p>
+      <p><strong>Key pieces</strong>:</p>
+      <ul>
+        <li><code>Coupon</code> + <code>CouponRedemption</code> models</li>
+        <li><code>GET /api/coupon?code=…</code></li>
+        <li><code>computeCouponDiscount</code> used by <code>POST /api/checkout</code></li>
+      </ul>
+      <p><strong>How to demonstrate</strong>:</p>
+      <ul>
+        <li>Login and add items so subtotal meets coupon minimum.</li>
+        <li>Call <code>/api/coupon?code=SAVE10</code> and verify ok response.</li>
+        <li>Proceed to checkout with a coupon code and verify reduced amount on Stripe Checkout.</li>
+        <li>After payment, confirm a <code>CouponRedemption</code> record exists (Prisma Studio).</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure 5.6 — Coupon applied</div>
+        <div class="hint">
+          Paste screenshot of discounted total on Stripe Checkout or coupon UI.
+        </div>
+      </div>
+
+      <h3>5.7 Wishlist</h3>
+      <p><strong>What it is</strong>: Per-user wishlist items with add/remove and a check endpoint.</p>
+      <p><strong>Key pieces</strong>:</p>
+      <ul>
+        <li><code>WishlistItem</code> model</li>
+        <li><code>/api/wishlist</code> GET/POST/DELETE</li>
+      </ul>
+      <p><strong>How to demonstrate</strong>:</p>
+      <ul>
+        <li>Login, open a product page, add it to wishlist.</li>
+        <li>Open <code>/en/wishlist</code> and confirm the product appears.</li>
+        <li>Remove it and verify it disappears; confirm API reflects <code>onList: false</code>.</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure 5.7 — Wishlist</div>
+        <div class="hint">Paste screenshot of <code>/en/wishlist</code> with items.</div>
+      </div>
+
+      <h3>5.8 Reviews (including verified purchase behavior)</h3>
+      <p>
+        <strong>What it is</strong>: Users can upsert one review per product. Reviews are marked
+        <code>verifiedPurchase</code> if the user has purchased the product.
+      </p>
+      <p><strong>Key pieces</strong>:</p>
+      <ul>
+        <li><code>Review</code> model unique(<code>userId</code>, <code>productId</code>)</li>
+        <li><code>/api/reviews</code> GET/POST</li>
+        <li>Verified purchase check via <code>OrderLine</code> join in the API</li>
+      </ul>
+      <p><strong>How to demonstrate</strong>:</p>
+      <ul>
+        <li>As a logged-in user who has NOT purchased a product, submit a review; verify it saves.</li>
+        <li>Purchase that product, then update the review.</li>
+        <li>Verify <code>verifiedPurchase</code> becomes true (DB inspection).</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure 5.8 — Reviews</div>
+        <div class="hint">Paste screenshot of reviews on product page or review form.</div>
+      </div>
+
+      <h3>5.9 Subscriptions (subscription checkout + webhook sync)</h3>
+      <p>
+        <strong>What it is</strong>: Subscription-eligible products can be purchased through Stripe
+        Checkout subscription mode using a Stripe price id. Webhooks upsert Subscription rows and
+        manage entitlements (<code>subscription_active</code>).
+      </p>
+      <p><strong>Key pieces</strong>:</p>
+      <ul>
+        <li><code>Product.isSubscriptionEligible</code> + <code>Product.stripePriceId</code></li>
+        <li><code>POST /api/checkout/subscription</code></li>
+        <li><code>POST /api/webhooks/stripe</code> subscription events</li>
+        <li><code>Subscription</code> + <code>SubscriptionEntitlement</code> tables</li>
+      </ul>
+      <p><strong>How to demonstrate</strong>:</p>
+      <ul>
+        <li>Create a recurring Stripe Price in Stripe dashboard.</li>
+        <li>Set that id on a subscription-eligible product (<code>stripePriceId</code>).</li>
+        <li>Login and start subscription checkout.</li>
+        <li>Verify Subscription row + entitlement key <code>subscription_active</code> in DB.</li>
+        <li>Cancel in Stripe test dashboard and verify entitlement removal after webhook processing.</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure 5.9 — Subscription</div>
+        <div class="hint">Paste Stripe subscription checkout or <code>/en/subscriptions</code> page.</div>
+      </div>
+
+      <h3>5.10 Seller area (dashboard, products, orders)</h3>
+      <p>
+        <strong>What it is</strong>: Seller pages for managing seller-related views. Access is
+        restricted to SELLER or ADMIN in the seller layout.
+      </p>
+      <p><strong>Key pieces</strong>:</p>
+      <ul>
+        <li><code>src/app/[locale]/seller/*</code> pages</li>
+        <li><code>src/app/[locale]/seller/layout.tsx</code> role guard</li>
+      </ul>
+      <p><strong>How to demonstrate</strong>:</p>
+      <ul>
+        <li>Login as <code>seller@example.com</code> and open <code>/en/seller</code>.</li>
+        <li>Navigate to <code>/en/seller/products</code> and <code>/en/seller/orders</code>.</li>
+        <li>Logged out: open <code>/en/seller</code> and confirm redirect to login.</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure 5.10 — Seller area</div>
+        <div class="hint">Paste screenshot of seller dashboard or orders.</div>
+      </div>
+
+      <h3>5.11 Stripe Connect onboarding for sellers</h3>
+      <p>
+        <strong>What it is</strong>: Sellers can create or reuse a Stripe Express account and
+        generate an onboarding link. Seller record stores <code>stripeConnectAccountId</code>. For
+        single-seller carts, the platform can take an application fee and transfer funds to the
+        connected account.
+      </p>
+      <p><strong>Key pieces</strong>:</p>
+      <ul>
+        <li><code>POST /api/seller/connect</code></li>
+        <li><code>Seller.stripeConnectAccountId</code></li>
+        <li>
+          Connect fee logic in <code>POST /api/checkout</code> (single-seller carts only)
+        </li>
+      </ul>
+      <p><strong>How to demonstrate</strong>:</p>
+      <ul>
+        <li>Set <code>STRIPE_SECRET_KEY</code> in <code>.env</code>.</li>
+        <li>Login as <code>seller@example.com</code> and open <code>/en/seller/onboarding</code>.</li>
+        <li>Start onboarding and complete Express flow in test mode.</li>
+        <li>Confirm <code>Seller.stripeConnectAccountId</code> saved in DB.</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure 5.11 — Stripe Connect onboarding</div>
+        <div class="hint">Paste Stripe Express onboarding or return URL after completion.</div>
+      </div>
+
+      <h3>5.12 Admin area (products, coupons, orders, analytics)</h3>
+      <p>
+        <strong>What it is</strong>: Admin dashboard for operational control. Access is restricted
+        to ADMIN at the admin layout level.
+      </p>
+      <p><strong>Key pieces</strong>:</p>
+      <ul>
+        <li><code>src/app/[locale]/admin/*</code> pages</li>
+        <li><code>src/app/[locale]/admin/layout.tsx</code> role guard</li>
+      </ul>
+      <p><strong>How to demonstrate</strong>:</p>
+      <ul>
+        <li>Login as <code>admin@example.com</code> and open <code>/en/admin</code>.</li>
+        <li>Open <code>/en/admin/products</code> and create a new product.</li>
+        <li>Edit an existing product and confirm changes persist.</li>
+        <li>Open <code>/en/admin/coupons</code> and verify seeded coupons exist (SAVE10, FLAT500).</li>
+        <li>Open <code>/en/admin/orders</code> after a checkout and confirm orders appear.</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure 5.12 — Admin</div>
+        <div class="hint">Paste screenshot of admin products list or orders.</div>
+      </div>
+
+      <h3>5.13 Product image upload + Blob media streaming</h3>
+      <p>
+        <strong>What it is</strong>: An authenticated endpoint accepts multipart uploads and stores
+        images either locally (<code>public/uploads</code>) or in Vercel Blob (optional). If Blob is
+        private, images can be streamed via <code>/api/media/blob</code> with pathname restrictions.
+      </p>
+      <p><strong>Key pieces</strong>:</p>
+      <ul>
+        <li><code>POST /api/upload/product-image</code></li>
+        <li><code>GET /api/media/blob?pathname=…</code></li>
+        <li><code>BLOB_READ_WRITE_TOKEN</code> and optional <code>BLOB_ACCESS</code> env vars</li>
+      </ul>
+      <p><strong>How to demonstrate</strong>:</p>
+      <ul>
+        <li>Login as ADMIN or SELLER.</li>
+        <li>Upload a product image via the product editor UI.</li>
+        <li>Verify returned URL is stored in <code>ProductImage.url</code> and renders on product page.</li>
+        <li>
+          If using private Blob: request <code>/api/media/blob?pathname=products/...</code> and confirm
+          it streams with caching headers.
+        </li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure 5.13 — Product image</div>
+        <div class="hint">Paste product page showing uploaded image or upload UI.</div>
+      </div>
+
+      <h3>5.14 Multi-language / locale routing (next-intl)</h3>
+      <p>
+        <strong>What it is</strong>: Locale segment routing under <code>/[locale]/…</code> with
+        server-side message loading. Only supported locales are allowed; others return
+        <code>notFound()</code>.
+      </p>
+      <p><strong>Key pieces</strong>:</p>
+      <ul>
+        <li><code>src/app/[locale]/layout.tsx</code></li>
+        <li><code>src/i18n/routing.ts</code> (<code>locales: ["en", "fr"]</code>)</li>
+      </ul>
+      <p><strong>How to demonstrate</strong>:</p>
+      <ul>
+        <li>Open <code>/en/products</code> then <code>/fr/products</code>.</li>
+        <li>Verify locale persists in navigation links.</li>
+        <li>Try an unsupported locale (e.g., <code>/es/products</code>) and confirm notFound behavior.</li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure 5.14 — Locales</div>
+        <div class="hint">Paste two screenshots of en vs fr pages.</div>
+      </div>
+
+      <h3>5.15 Account export (download JSON)</h3>
+      <p>
+        <strong>What it is</strong>: An authenticated endpoint that returns a JSON export of user
+        data (profile fields, orders+lines, addresses, reviews, wishlist).
+      </p>
+      <p><strong>Key pieces</strong>:</p>
+      <ul>
+        <li><code>GET /api/account/export</code></li>
+        <li><code>Content-Disposition</code> header triggers download</li>
+      </ul>
+      <p><strong>How to demonstrate</strong>:</p>
+      <ul>
+        <li>Login as a customer and place an order and/or create reviews/wishlist items.</li>
+        <li>Open <code>/api/account/export</code> in the browser.</li>
+        <li>
+          Confirm it downloads as <code>export-&lt;userId&gt;.json</code> and includes expected objects.
+        </li>
+      </ul>
+      <div class="frame">
+        <div class="frame-title">Figure 5.15 — Account export</div>
+        <div class="hint">Paste browser download bar or JSON opened in editor (redact if needed).</div>
+      </div>
+
+      <h2>6. Main pages / routes (UI)</h2>
+      <p class="small">All UI routes below are under <code>/[locale]/…</code> (example: <code>/en/products</code>).</p>
+      <ul>
+        <li>Home: <code>/[locale]/</code></li>
+        <li>Products: <code>/[locale]/products</code></li>
+        <li>Product details: <code>/[locale]/products/[slug]</code></li>
+        <li>Search: <code>/[locale]/search</code></li>
+        <li>Cart: <code>/[locale]/cart</code></li>
+        <li>Checkout: <code>/[locale]/checkout</code></li>
+        <li>Checkout success: <code>/[locale]/checkout/success</code></li>
+        <li>Wishlist: <code>/[locale]/wishlist</code></li>
+        <li>Subscriptions: <code>/[locale]/subscriptions</code></li>
+        <li>Auth: <code>/[locale]/login</code>, <code>/[locale]/register</code></li>
+        <li>Account orders: <code>/[locale]/account/orders</code></li>
+        <li>Seller: <code>/[locale]/seller</code>, <code>/[locale]/seller/onboarding</code>, <code>/[locale]/seller/products</code>, <code>/[locale]/seller/orders</code></li>
+        <li>Admin: <code>/[locale]/admin</code>, <code>/[locale]/admin/products</code>, <code>/[locale]/admin/products/new</code>, <code>/[locale]/admin/products/[id]</code>, <code>/[locale]/admin/orders</code>, <code>/[locale]/admin/coupons</code>, <code>/[locale]/admin/analytics</code></li>
+        <li>Policies: <code>/[locale]/policies/privacy</code>, <code>/[locale]/policies/seller-terms</code></li>
+      </ul>
+
+      <h2>7. API endpoints (server routes)</h2>
+      <p class="small">
+        The app uses Next.js route handlers under <code>src/app/api</code> (mounted at
+        <code>/api</code>).
+      </p>
+      <ul>
+        <li>Auth: <code>POST /api/auth/register</code>, <code>GET/POST /api/auth/[...nextauth]</code></li>
+        <li>Cart: <code>POST /api/cart</code>, <code>PATCH /api/cart</code>, <code>DELETE /api/cart</code></li>
+        <li>Wishlist: <code>GET/POST/DELETE /api/wishlist</code></li>
+        <li>Reviews: <code>GET/POST /api/reviews</code></li>
+        <li>Coupons: <code>GET /api/coupon?code=…</code></li>
+        <li>Checkout (one-time): <code>POST /api/checkout</code></li>
+        <li>Checkout (subscription): <code>POST /api/checkout/subscription</code></li>
+        <li>Stripe webhooks: <code>POST /api/webhooks/stripe</code></li>
+        <li>Seller onboarding: <code>POST /api/seller/connect</code></li>
+        <li>Upload product image: <code>POST /api/upload/product-image</code></li>
+        <li>Private Blob streaming: <code>GET /api/media/blob?pathname=…</code></li>
+        <li>Account export: <code>GET /api/account/export</code></li>
+      </ul>
+
+      <h2>8. Data model (Prisma / PostgreSQL)</h2>
+      <p><strong>Core entities</strong>:</p>
+      <ul>
+        <li>Users with roles: CUSTOMER, SELLER, ADMIN</li>
+        <li>Sellers (shop profile + Stripe Connect account id + verification status)</li>
+        <li>Products, categories, product images</li>
+        <li>Cart + cart items (guest via sessionId, logged-in via userId)</li>
+        <li>
+          Orders + order lines (orders stored per-seller; checkout can split a single paid session into
+          multiple seller orders)
+        </li>
+        <li>Reviews (one review per user+product), verifiedPurchase flag</li>
+        <li>Wishlist items</li>
+        <li>Coupons + redemptions</li>
+        <li>Subscriptions + subscription entitlements (key: subscription_active)</li>
+        <li>StripeEvent table for webhook idempotency</li>
+      </ul>
+
+      <h2>9. Authentication and authorization</h2>
+      <p>
+        Authentication is handled by NextAuth using a credentials provider (email + password hash).
+        Sessions are JWT-based. Role-based access is enforced in server layouts for
+        <code>/admin</code> and <code>/seller</code>.
+      </p>
+
+      <h2>10. Payments and Stripe</h2>
+      <h3>10.1 One-time checkout</h3>
+      <p>
+        A logged-in user creates a Stripe Checkout session for cart items. The checkout payload
+        includes shipping, optional estimated tax (when Stripe Tax is off), and optional coupons. If
+        the cart contains items from a single seller with Stripe Connect configured, the payment
+        intent includes an application fee and transfer destination.
+      </p>
+      <h3>10.2 Webhooks</h3>
+      <p>
+        Stripe webhooks finalize orders, decrement stock, split orders per seller, record coupon
+        redemption, clear cart, and sync subscription lifecycle events. Idempotency is enforced via
+        the <code>StripeEvent</code> table.
+      </p>
+
+      <h2>11. Environment variables</h2>
+      <p>
+        Create a <code>.env</code> file based on <code>.env.example</code>. Key variables:
+      </p>
+      <ul>
+        <li><code>DATABASE_URL</code>: PostgreSQL connection string</li>
+        <li><code>NEXTAUTH_SECRET</code>, <code>NEXTAUTH_URL</code></li>
+        <li><code>NEXT_PUBLIC_APP_URL</code>: public base URL for Stripe redirects</li>
+        <li>
+          <code>STRIPE_SECRET_KEY</code>, <code>STRIPE_WEBHOOK_SECRET</code>,
+          <code>NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY</code>
+        </li>
+        <li><code>STRIPE_ENABLE_TAX</code>, <code>TAX_BPS</code> (optional estimated tax)</li>
+        <li><code>BLOB_READ_WRITE_TOKEN</code>, <code>BLOB_ACCESS</code> (optional Vercel Blob)</li>
+      </ul>
+
+      <h2>12. Notes and constraints</h2>
+      <ul>
+        <li>Currency amounts are stored as integers (cents) in the database and Stripe line items.</li>
+        <li>Cart supports guest sessions via an HTTP-only cookie.</li>
+        <li>Reviews are limited to one per user per product (upsert).</li>
+        <li>Webhook handler uses a <code>StripeEvent</code> table for idempotency.</li>
+      </ul>
+
+      <div class="rule"></div>
+
+      <p class="small">End of document.</p>
+    </main>
+  </body>
+</html>
+
