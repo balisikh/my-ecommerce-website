@@ -44,3 +44,8 @@ next-env.d.ts
 # user-uploaded product images (keep folder)
 /public/uploads/products/*
 !/public/uploads/.gitkeep
+
+# local project documentation exports
+PROJECT_DOCUMENTATION.pdf
+PROJECT_DOCUMENTATION.fodt
+PROJECT_DOCUMENTATION_DEVELOPER.pdf
